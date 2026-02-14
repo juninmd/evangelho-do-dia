@@ -1,0 +1,44 @@
+name: PR UI Screenshot
+
+on:
+  pull_request:
+    types: [opened, synchronize, reopened]
+
+jobs:
+  screenshot:
+    runs-on: ubuntu-latest
+    timeout-minutes: 20
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: '20'
+          cache: npm
+
+      - name: Install dependencies
+        run: npm ci
+
+      - name: Build web bundle
+        run: npx expo export --platform web --output-dir dist
+
+      - name: Install screenshot dependencies
+        run: |
+          npm install --no-save playwright serve wait-on
+          npx playwright install --with-deps chromium
+
+      - name: Capture screenshot
+        run: |
+          npx serve -s dist -l 4173 &
+          npx wait-on tcp:4173
+          node -e "const { chromium } = require('playwright'); (async () => { const browser = await chromium.launch({ headless: true }); const page = await browser.newPage({ viewport: { width: 390, height: 844 } }); await page.goto('http://127.0.0.1:4173', { waitUntil: 'networkidle' }); await page.screenshot({ path: 'pr-ui-screenshot.png', fullPage: true }); await browser.close(); })();"
+
+      - name: Upload screenshot artifact
+        uses: actions/upload-artifact@v4
+        with:
+          name: pr-ui-screenshot
+          path: pr-ui-screenshot.png
+          if-no-files-found: error

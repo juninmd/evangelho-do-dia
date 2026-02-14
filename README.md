@@ -116,11 +116,11 @@ npm run send-telegram
 
 ```
 evangelho-do-dia/
-├── App.js                      # Componente principal do app
+├── App.tsx                      # Componente principal do app
 ├── app.json                    # Configuração do Expo
 ├── package.json                # Dependências e scripts
 ├── services/
-│   └── gospel-service.js       # Serviço para buscar evangelho
+│   └── gospel-service.ts       # Serviço para buscar evangelho
 ├── scripts/
 │   ├── scrape-gospel.js        # Script de scraping
 │   └── send-telegram.js        # Script de envio ao Telegram
@@ -134,7 +134,7 @@ evangelho-do-dia/
 
 ### Cores do Tema
 
-As cores podem ser ajustadas no arquivo `App.js` na seção `StyleSheet`:
+As cores podem ser ajustadas no arquivo `App.tsx` na seção `StyleSheet`:
 
 - **Primária**: `#8B4513` (Marrom)
 - **Background**: `#F5F5DC` (Bege claro)

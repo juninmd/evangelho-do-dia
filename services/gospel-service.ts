@@ -2,12 +2,18 @@
  * Service to fetch the Gospel of the Day from Canção Nova website
  */
 
-const CANCAO_NOVA_URL = 'https://liturgia.cancaonova.com/pb/';
+export interface Gospel {
+  date: string;
+  title: string;
+  reference: string;
+  text: string;
+  reflection: string;
+}
 
 /**
  * Mock data for development and fallback
  */
-const getMockGospel = () => {
+const getMockGospel = (): Gospel => {
   const today = new Date();
   return {
     date: today.toLocaleDateString('pt-BR', {
@@ -32,7 +38,8 @@ Felizes os que são perseguidos por causa da justiça, porque deles é o Reino d
 Felizes sois vós, quando vos insultarem e perseguirem, e, mentindo, disserem todo o mal contra vós por causa de mim. Alegrai-vos e exultai, porque será grande a vossa recompensa nos céus."
 
 Palavra da Salvação.`,
-    reflection: 'As bem-aventuranças são o caminho da verdadeira felicidade proposto por Jesus. Elas nos ensinam que a felicidade não está nas riquezas materiais, mas na confiança em Deus, na humildade, na justiça e no amor ao próximo.',
+    reflection:
+      'As bem-aventuranças são o caminho da verdadeira felicidade proposto por Jesus. Elas nos ensinam que a felicidade não está nas riquezas materiais, mas na confiança em Deus, na humildade, na justiça e no amor ao próximo.',
   };
 };
 
@@ -44,7 +51,7 @@ Palavra da Salvação.`,
  * 3. Parse the HTML structure of the website
  * 4. Handle errors and edge cases
  */
-export const getGospelOfTheDay = async () => {
+export const getGospelOfTheDay = async (): Promise<Gospel> => {
   try {
     // For React Native, you would typically call a backend API
     // that does the scraping, as direct web scraping in React Native

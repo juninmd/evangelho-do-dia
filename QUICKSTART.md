@@ -74,7 +74,7 @@ Este guia mostra como colocar o app e o bot do Telegram em funcionamento em **me
 ## 🎨 Personalize (Opcional)
 
 ### Mudar cores do app
-Edite `App.js` → procure por `StyleSheet.create` → mude as cores:
+Edite `App.tsx` → procure por `StyleSheet.create` → mude as cores:
 ```javascript
 backgroundColor: '#F5F5DC',  // mude aqui
 color: '#8B4513',            // e aqui
