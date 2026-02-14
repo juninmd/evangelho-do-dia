@@ -1,0 +1,41 @@
+name: Enviar Evangelho do Dia ao Telegram
+
+on:
+  schedule:
+    # Runs every day at 6:00 AM UTC (3:00 AM Brasília)
+    - cron: '0 6 * * *'
+  workflow_dispatch: # Allows manual trigger
+
+jobs:
+  send-gospel:
+    runs-on: ubuntu-latest
+    
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: '18'
+          cache: 'npm'
+
+      - name: Install dependencies
+        run: npm ci
+
+      - name: Scrape Gospel of the Day
+        run: npm run scrape
+
+      - name: Send to Telegram
+        env:
+          TELEGRAM_BOT_TOKEN: ${{ secrets.TELEGRAM_BOT_TOKEN }}
+          TELEGRAM_CHAT_ID: ${{ secrets.TELEGRAM_CHAT_ID }}
+        run: npm run send-telegram
+
+      - name: Upload gospel data artifact
+        uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: gospel-data
+          path: gospel-data.json
+          retention-days: 7
