@@ -1,22 +1,22 @@
-import React, { useState, useEffect } from 'react';
+import React, { useEffect, useState } from 'react';
 import {
+  ActivityIndicator,
+  RefreshControl,
+  SafeAreaView,
+  ScrollView,
   StyleSheet,
   Text,
-  View,
-  ScrollView,
-  RefreshControl,
-  ActivityIndicator,
-  SafeAreaView,
   TouchableOpacity,
+  View,
 } from 'react-native';
 import { StatusBar } from 'expo-status-bar';
-import { getGospelOfTheDay } from './services/gospel-service';
+import { getGospelOfTheDay, type Gospel } from './services/gospel-service';
 
 export default function App() {
-  const [gospel, setGospel] = useState(null);
+  const [gospel, setGospel] = useState(null as Gospel | null);
   const [loading, setLoading] = useState(true);
   const [refreshing, setRefreshing] = useState(false);
-  const [error, setError] = useState(null);
+  const [error, setError] = useState(null as string | null);
 
   const loadGospel = async () => {
     try {
@@ -38,7 +38,7 @@ export default function App() {
 
   const onRefresh = () => {
     setRefreshing(true);
-    loadGospel();
+    void loadGospel();
   };
 
   if (loading) {
@@ -58,51 +58,49 @@ export default function App() {
       <ScrollView
         style={styles.scrollView}
         contentContainerStyle={styles.scrollContent}
-        refreshControl={
-          <RefreshControl refreshing={refreshing} onRefresh={onRefresh} />
-        }
+        refreshControl={<RefreshControl refreshing={refreshing} onRefresh={onRefresh} />}
       >
         <View style={styles.header}>
           <Text style={styles.title}>📖 Evangelho do Dia</Text>
-          <Text style={styles.date}>{gospel?.date || new Date().toLocaleDateString('pt-BR')}</Text>
+          <Text style={styles.date}>{gospel?.date ?? new Date().toLocaleDateString('pt-BR')}</Text>
         </View>
 
         {error ? (
           <View style={styles.errorContainer}>
             <Text style={styles.errorText}>{error}</Text>
-            <TouchableOpacity style={styles.retryButton} onPress={loadGospel}>
+            <TouchableOpacity style={styles.retryButton} onPress={() => void loadGospel()}>
               <Text style={styles.retryButtonText}>Tentar Novamente</Text>
             </TouchableOpacity>
           </View>
         ) : (
           <>
-            {gospel?.title && (
+            {gospel?.title ? (
               <View style={styles.section}>
                 <Text style={styles.sectionTitle}>Título</Text>
                 <Text style={styles.sectionContent}>{gospel.title}</Text>
               </View>
-            )}
+            ) : null}
 
-            {gospel?.reference && (
+            {gospel?.reference ? (
               <View style={styles.section}>
                 <Text style={styles.sectionTitle}>Referência</Text>
                 <Text style={styles.sectionReference}>{gospel.reference}</Text>
               </View>
-            )}
+            ) : null}
 
-            {gospel?.text && (
+            {gospel?.text ? (
               <View style={styles.section}>
                 <Text style={styles.sectionTitle}>Evangelho</Text>
                 <Text style={styles.gospelText}>{gospel.text}</Text>
               </View>
-            )}
+            ) : null}
 
-            {gospel?.reflection && (
+            {gospel?.reflection ? (
               <View style={styles.section}>
                 <Text style={styles.sectionTitle}>Reflexão</Text>
                 <Text style={styles.reflectionText}>{gospel.reflection}</Text>
               </View>
-            )}
+            ) : null}
           </>
         )}
 

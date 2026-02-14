@@ -6,7 +6,7 @@ Este projeto implementa uma solução completa para distribuir o Evangelho do Di
 
 ### 🎯 Componentes Principais
 
-#### 1. Aplicativo React Native (App.js)
+#### 1. Aplicativo React Native (App.tsx)
 - **Interface Moderna**: Design limpo com cores temáticas (marrom, bege, dourado)
 - **Funcionalidades**:
   - Exibição do evangelho do dia com título, referência e texto completo
@@ -48,7 +48,7 @@ Este projeto implementa uma solução completa para distribuir o Evangelho do Di
 
 ```
 evangelho-do-dia/
-├── App.js                          # App React Native principal
+├── App.tsx                          # App React Native principal
 ├── package.json                    # Dependências do projeto
 ├── app.json                        # Configuração do Expo
 ├── babel.config.js                 # Configuração do Babel
@@ -56,7 +56,7 @@ evangelho-do-dia/
 ├── .env.example                    # Exemplo de variáveis de ambiente
 │
 ├── services/
-│   └── gospel-service.js           # Serviço para buscar evangelho
+│   └── gospel-service.ts           # Serviço para buscar evangelho
 │
 ├── scripts/
 │   ├── scrape-gospel.js            # Script de scraping
@@ -130,7 +130,7 @@ cron: '0 6 * * *'  # 6:00 UTC = 3:00 AM Brasília
 Veja o guia completo em `SCRAPER_GUIDE.md`
 
 #### Mudar Cores do App:
-Edite os estilos em `App.js` na seção `StyleSheet.create()`
+Edite os estilos em `App.tsx` na seção `StyleSheet.create()`
 
 ### 📊 Fluxo de Dados
 
@@ -149,7 +149,7 @@ Paralelamente:
 
 1. App React Native
    ↓
-2. gospel-service.js (busca dados)
+2. gospel-service.ts (busca dados)
    ↓
 3. UI (exibe evangelho)
 ```

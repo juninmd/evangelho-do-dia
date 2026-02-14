@@ -1,71 +1,93 @@
 # GitHub Actions Workflows
 
-## Workflow: Enviar Evangelho do Dia ao Telegram
+## 1) Workflow: Enviar Evangelho do Dia ao Telegram (`daily-gospel.yml`)
 
 ### O que faz?
-Este workflow automatiza o envio diário do evangelho para um canal do Telegram.
+Automatiza o scraping do evangelho e o envio diário para um canal do Telegram.
 
 ### Quando executa?
-- **Automático**: Todo dia às 6:00 UTC (3:00 AM horário de Brasília)
-- **Manual**: Pode ser disparado manualmente na aba Actions
+- **Automático**: todo dia às 6:00 UTC (3:00 horário de Brasília)
+- **Manual**: disparo manual pela aba Actions
 
-### Requisitos
-Para que este workflow funcione, você precisa configurar os seguintes **secrets** no repositório:
+### Requisitos (secrets)
+1. `TELEGRAM_BOT_TOKEN`: token do bot criado no @BotFather
+2. `TELEGRAM_CHAT_ID`: ID do canal onde a mensagem será publicada
 
-1. `TELEGRAM_BOT_TOKEN`: Token do bot obtido do @BotFather
-2. `TELEGRAM_CHAT_ID`: ID do canal onde as mensagens serão enviadas
+### Principais passos
+1. Checkout do repositório
+2. Setup do Node.js
+3. Instalação de dependências
+4. Scraping do evangelho
+5. Envio para Telegram
+6. Upload do artifact `gospel-data`
 
-### Como configurar secrets?
-1. Vá em `Settings` → `Secrets and variables` → `Actions`
-2. Clique em `New repository secret`
-3. Adicione cada secret
+---
 
-### Passos do Workflow
-1. **Checkout**: Faz checkout do código
-2. **Setup Node.js**: Configura Node.js 18
-3. **Install**: Instala dependências
-4. **Scrape**: Busca o evangelho do dia
-5. **Send**: Envia para o Telegram
-6. **Upload**: Salva dados como artifact
+## 2) Workflow: Android Build Artifacts (`android-build.yml`)
 
-### Executar Manualmente
-1. Vá para a aba `Actions`
-2. Selecione "Enviar Evangelho do Dia ao Telegram"
-3. Clique em `Run workflow`
-4. Aguarde a execução
-5. Verifique o canal do Telegram
+### O que faz?
+Gera artefatos Android em CI para validação e distribuição:
+- APK **debug**
+- APK **release**
+- AAB **release**
 
-### Debugging
-- Veja os logs de cada step no GitHub Actions
-- Baixe o artifact `gospel-data` para ver os dados
-- Verifique se as secrets estão configuradas corretamente
+### Quando executa?
+- Em `push` para `main`
+- Em `pull_request`
+- Manualmente (`workflow_dispatch`)
 
-### Modificar Horário
-Edite o arquivo `daily-gospel.yml` e ajuste a linha do cron:
-```yaml
-cron: '0 6 * * *'  # minuto hora dia mês dia-da-semana
-```
+### Principais passos
+1. Instala dependências NPM
+2. Executa `expo prebuild` para gerar o projeto Android nativo
+3. Roda Gradle para criar:
+   - `assembleDebug`
+   - `assembleRelease`
+   - `bundleRelease`
+4. Publica os artefatos no Actions
 
-Exemplos:
-- `0 6 * * *` → 6:00 UTC (3:00 AM Brasília)
-- `0 12 * * *` → 12:00 UTC (9:00 AM Brasília)
-- `0 21 * * *` → 21:00 UTC (6:00 PM Brasília)
+### Observações
+- O workflow é ideal para garantir que o app continue compilando no Android a cada alteração.
+- O APK release pode ser gerado sem assinatura final de produção, dependendo da configuração de signing da sua esteira.
 
-### Troubleshooting
+---
 
-**Workflow não executa**
-- Verifique se está na branch correta
-- Confirme que o arquivo YAML está válido
-- Veja se há erros na aba Actions
+## 3) Workflow: PR UI Screenshot (`pr-ui-screenshot.yml`)
 
-**Telegram não recebe mensagem**
-- Verifique se TELEGRAM_BOT_TOKEN está correto
-- Confirme que TELEGRAM_CHAT_ID está correto
-- Certifique-se de que o bot é admin do canal
+### O que faz?
+A cada PR, gera um build web do app Expo e captura um screenshot automático da interface para inspeção visual.
 
-**Scraping falha**
-- Normal se o site estiver bloqueado
-- O sistema usa fallback automático
-- Verifique os logs para detalhes
+### Quando executa?
+- `pull_request` (opened, synchronize, reopened)
+
+### Principais passos
+1. Build web com `expo export`
+2. Sobe o conteúdo estático localmente
+3. Usa Playwright (Chromium headless) para capturar screenshot
+4. Publica artifact `pr-ui-screenshot`
+
+### Observações
+- O screenshot é uma validação visual rápida da tela inicial.
+- Você pode expandir para mais telas/rotas com scripts Playwright adicionais.
+
+---
+
+## Troubleshooting
+
+### Workflow não executa
+- Verifique se o arquivo YAML está válido
+- Confirme se o evento configurado (push/PR/manual) realmente ocorreu
+- Veja logs da aba Actions
+
+### Telegram não recebe mensagem
+- Confirme `TELEGRAM_BOT_TOKEN` e `TELEGRAM_CHAT_ID`
+- Verifique se o bot é admin do canal
+
+### Build Android falha
+- Confira logs do `expo prebuild` e do Gradle
+- Verifique incompatibilidade de versões Node/Java/dependências
+
+### Screenshot da PR falha
+- Verifique logs de `expo export`, `serve`, `wait-on` e Playwright
+- Confirme se o bundle web foi gerado em `dist`
 
 Para mais informações, consulte `TELEGRAM_SETUP.md` e `SCRAPER_GUIDE.md`.
