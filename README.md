@@ -168,6 +168,10 @@ A mensagem é formatada em Markdown com:
 - Reflexão 💭
 - Fonte
 
+## 🧱 Revisão de Arquitetura
+
+Veja a análise técnica em `ARQUITETURA_REVIEW.md`.
+
 ## 🤝 Contribuindo
 
 Contribuições são bem-vindas! Por favor:
