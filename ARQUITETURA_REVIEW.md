@@ -73,18 +73,16 @@ O projeto está organizado em três blocos principais:
 
 ## Arquitetura alvo (incremental)
 
-```text
 [Canção Nova]
      |
      v
 [Scraper + Validator] ---> [gospel-data.json / storage]
-     |                               |
-     v                               v
-[API Gospel (single source)] ---> [App Expo]
-     |
-     v
-[Telegram Publisher]
-```
+                              |
+                              v
+               [API Gospel (single source)]
+              /                           \
+             v                             v
+       [App Expo]                  [Telegram Publisher]
 
 ## Plano de evolução sugerido
 
