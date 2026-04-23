@@ -15,26 +15,30 @@ const TELEGRAM_CHAT_ID = process.env.TELEGRAM_CHAT_ID;
  * Format the gospel message for Telegram
  */
 function formatGospelMessage(gospel) {
-  let message = `📖 *Evangelho do Dia*\n\n`;
-  message += `📅 ${gospel.date}\n\n`;
+  let message = `🕊️ *EVANGELHO DO DIA* 🕊️\n`;
+  message += `────────────────────────\n`;
+  message += `📅 *Data:* ${gospel.date}\n`;
   
   if (gospel.title && gospel.title !== 'Evangelho do Dia') {
-    message += `*${gospel.title}*\n\n`;
+    message += `📌 *${gospel.title}*\n`;
   }
   
   if (gospel.reference) {
-    message += `📜 _${gospel.reference}_\n\n`;
+    message += `📜 _${gospel.reference}_\n`;
   }
+  
+  message += `────────────────────────\n\n`;
   
   if (gospel.text) {
     message += `${gospel.text}\n\n`;
   }
   
   if (gospel.reflection) {
-    message += `💭 *Reflexão*\n${gospel.reflection}\n\n`;
+    message += `💭 *REFLEXÃO*\n${gospel.reflection}\n\n`;
   }
   
-  message += `_Fonte: Canção Nova_`;
+  message += `────────────────────────\n`;
+  message += `🙏 _Fonte: Canção Nova_`;
   
   return message;
 }
