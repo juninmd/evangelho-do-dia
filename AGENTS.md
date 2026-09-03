@@ -1,42 +1,52 @@
 # AGENTS.md - Evangelho do Dia
 
 ## Tech Stack
-- **Language**: JavaScript
+- **Language**: TypeScript & JavaScript
 - **Framework**: React Native (Expo SDK 51)
+- **UI/UX**: Design Sagrado Sublime, Temas Claro (Pergaminho) e Escuro (Santuário Noturno), Cores Litúrgicas Dinâmicas
+- **Áudio**: Expo Speech (Text-to-Speech pt-BR integrado com velocidade ajustável)
+- **Persistência**: @react-native-async-storage/async-storage
+- **Ícones & Efeitos**: @expo/vector-icons, expo-linear-gradient
 - **Scraping**: Axios + Cheerio (Node.js scripts)
 - **Bot**: node-telegram-bot-api
-- **Notifications**: Firebase Cloud Messaging / Telegram API
-- **Package Manager**: npm
-- **Build**: Expo (Android/iOS/Web)
+- **Build**: Expo (Android, iOS e Web responsivo)
 
 ## Project Structure
 ```
-src/                  # Expo app source
-scripts/              # Node.js utility scripts
-  scrape-gospel.js    # Daily gospel scraper
-  send-telegram.js    # Telegram bot sender
+components/           # Componentes modulares de UI/UX
+  Header.tsx          # Cabeçalho com navegação diária e abas
+  ReadingView.tsx     # Leitura do Evangelho com capitular iluminada
+  HeroQuoteCard.tsx   # Versículo em destaque com gradiente nobre
+  AudioPlayerBar.tsx  # Barra de áudio com ondas sonoras animadas
+  ReflectionView.tsx  # Homilia e meditação do coração
+  PrayerPurposeView.tsx # Oração do dia e propósito diário interativo
+  FavoritesView.tsx   # Gerenciamento de passagens favoritas salvas
+  LiturgicalBadge.tsx # Distintivo litúrgico da Igreja Católica
+  FontSizeModal.tsx   # Ajuste tipográfico de leitura
+  Toast.tsx           # Feedback visual elegante
+theme/                # Sistema de cores, contrastes e cores litúrgicas
+services/             # Serviços da aplicação
+  gospel-service.ts   # Liturgia diária, calendário e textos sagrados
+  speech-service.ts   # Síntese de voz e narração
+  storage-service.ts  # Persistência local de preferências e favoritos
+scripts/              # Utilitários de backend
+  scrape-gospel.js    # Scraper Canção Nova
+  send-telegram.js    # Bot de envio Telegram
 ```
 
 ## Scripts
 ```bash
 npm start             # Start Expo
 npm run android       # Run Android
-npm run ios          # Run iOS
-npm run web          # Run web version
-npm run scrape       # Scrape daily gospel
+npm run ios           # Run iOS
+npm run web           # Run web version
+npm run scrape        # Scrape daily gospel
 npm run send-telegram # Send via Telegram bot
+npx tsc --noEmit      # Type-check TypeScript
 ```
-
-## Key Dependencies
-- expo ~51.0, react-native 0.74.5
-- axios + cheerio (web scraping)
-- node-telegram-bot-api
 
 ## Conventions
 - Expo managed workflow
-- Node scripts for backend automation
-- Portuguese (Brazilian) content
-
-## Environment Variables
-- `TELEGRAM_BOT_TOKEN` - Telegram bot authentication
-- `TELEGRAM_CHAT_ID` - Target chat ID
+- Tipagem estrita com TypeScript
+- Acessibilidade e responsividade para dispositivos móveis e web
+- Conteúdo litúrgico da Igreja Católica em Língua Portuguesa (pt-BR)

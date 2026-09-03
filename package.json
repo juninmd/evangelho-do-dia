@@ -11,19 +11,27 @@
     "send-telegram": "node scripts/send-telegram.js"
   },
   "dependencies": {
-    "expo": "~51.0.0",
-    "expo-status-bar": "~1.12.1",
-    "react": "18.2.0",
-    "react-native": "0.74.5",
-    "react-dom": "18.2.0",
-    "react-native-web": "~0.19.6",
     "@expo/metro-runtime": "~3.2.1",
+    "@expo/vector-icons": "14.0.2",
+    "@react-native-async-storage/async-storage": "1.23.1",
     "axios": "^1.6.7",
     "cheerio": "^1.0.0-rc.12",
-    "node-telegram-bot-api": "^0.64.0"
+    "expo": "~51.0.0",
+    "expo-linear-gradient": "~13.0.2",
+    "expo-speech": "~12.0.2",
+    "expo-status-bar": "~1.12.1",
+    "fbjs": "3.0.5",
+    "node-telegram-bot-api": "^0.64.0",
+    "react": "18.2.0",
+    "react-dom": "18.2.0",
+    "react-native": "0.74.5",
+    "react-native-web": "~0.19.10"
   },
   "devDependencies": {
-    "@babel/core": "^7.24.0"
+    "@babel/core": "^7.24.0",
+    "@types/node": "^26.4.1",
+    "@types/react": "~18.2.45",
+    "typescript": "~5.3.3"
   },
   "private": true
 }
