@@ -3,7 +3,6 @@
  * This script reads the scraped gospel data and sends it via Telegram Bot API
  */
 
-const TelegramBot = require('node-telegram-bot-api');
 const fs = require('fs');
 const path = require('path');
 
@@ -44,6 +43,29 @@ function formatGospelMessage(gospel) {
 }
 
 /**
+ * Send a message through the Telegram Bot API without a client library
+ */
+async function sendMessage(text) {
+  const url = `https://api.telegram.org/bot${TELEGRAM_BOT_TOKEN}/sendMessage`;
+  const response = await fetch(url, {
+    method: 'POST',
+    headers: { 'Content-Type': 'application/json' },
+    body: JSON.stringify({
+      chat_id: TELEGRAM_CHAT_ID,
+      text,
+      parse_mode: 'Markdown',
+    }),
+  });
+
+  if (!response.ok) {
+    const detail = await response.text();
+    throw new Error(`Telegram API respondeu ${response.status}: ${detail}`);
+  }
+
+  return response.json();
+}
+
+/**
  * Send gospel to Telegram channel
  */
 async function sendToTelegram() {
@@ -66,17 +88,12 @@ async function sendToTelegram() {
 
     const gospelData = JSON.parse(fs.readFileSync(gospelPath, 'utf8'));
     
-    // Create bot instance
-    const bot = new TelegramBot(TELEGRAM_BOT_TOKEN);
-    
     // Format and send message
     const message = formatGospelMessage(gospelData);
     
     console.log('Sending gospel to Telegram...');
     
-    await bot.sendMessage(TELEGRAM_CHAT_ID, message, {
-      parse_mode: 'Markdown',
-    });
+    await sendMessage(message);
     
     console.log('Gospel sent successfully to Telegram!');
     console.log(`Chat ID: ${TELEGRAM_CHAT_ID}`);
