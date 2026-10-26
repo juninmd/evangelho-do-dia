@@ -12,6 +12,9 @@ interface Props {
 export const Toast: React.FC<Props> = ({ message, theme, onDismiss }) => {
   const opacity = useRef(new Animated.Value(0)).current;
   const translateY = useRef(new Animated.Value(20)).current;
+  // Mantém a última referência sem reiniciar o temporizador a cada render do pai.
+  const onDismissRef = useRef(onDismiss);
+  onDismissRef.current = onDismiss;
 
   useEffect(() => {
     if (message) {
@@ -25,13 +28,13 @@ export const Toast: React.FC<Props> = ({ message, theme, onDismiss }) => {
           Animated.timing(opacity, { toValue: 0, duration: 200, useNativeDriver: true }),
           Animated.timing(translateY, { toValue: 20, duration: 200, useNativeDriver: true }),
         ]).start(() => {
-          onDismiss();
+          onDismissRef.current();
         });
       }, 2600);
 
       return () => clearTimeout(timer);
     }
-  }, [message, opacity, translateY, onDismiss]);
+  }, [message, opacity, translateY]);
 
   if (!message) return null;
 
