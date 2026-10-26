@@ -196,7 +196,7 @@ export default function App() {
         await Share.share({ message: text });
       }
     } catch {
-      showToast('Copiado com sucesso!');
+      showToast('Não foi possível copiar. Tente novamente.');
     }
   };
 
