@@ -16,20 +16,20 @@
     "@react-native-async-storage/async-storage": "2.2.0",
     "axios": "^1.20.0",
     "cheerio": "^1.2.0",
-    "expo": "~58.0.19",
+    "expo": "~58.0.22",
     "expo-linear-gradient": "~58.0.3",
     "expo-speech": "~58.0.3",
     "expo-status-bar": "~58.0.4",
-    "react": "19.3.0",
-    "react-dom": "19.3.0",
-    "react-native": "0.88.0",
+    "react": "19.3.1",
+    "react-dom": "19.3.1",
+    "react-native": "0.88.1",
     "react-native-web": "~0.21.4"
   },
   "devDependencies": {
-    "@babel/core": "^7.29.7",
-    "@types/node": "^26.4.1",
+    "@babel/core": "^8.1.0",
+    "@types/node": "^26.6.6",
     "@types/react": "~19.3.0",
-    "typescript": "~5.9.3"
+    "typescript": "~7.0.2"
   },
   "overrides": {
     "browserslist": "^4.29.4",
