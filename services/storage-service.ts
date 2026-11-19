@@ -80,9 +80,14 @@ export const StorageService = {
       // Corrupted or hand-edited storage must not break callers that expect an array of items.
       if (!Array.isArray(parsed)) return [];
       return parsed.filter(
-        (f): f is FavoriteItem => !!f && typeof f === 'object' && typeof (f as FavoriteItem).id === 'string'
+        (f): f is FavoriteItem =>
+          !!f &&
+          typeof f === 'object' &&
+          typeof (f as FavoriteItem).id === 'string' &&
+          (f as FavoriteItem).id.length > 0
       );
-    } catch {
+    } catch (e) {
+      console.error('Erro ao ler favoritos:', e);
       return [];
     }
   },

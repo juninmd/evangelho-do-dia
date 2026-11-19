@@ -127,11 +127,11 @@ export default function App() {
     };
 
     const result = await StorageService.toggleFavorite(item);
-    setFavorites(result.favorites);
     if (!result.ok) {
       showToast('Não foi possível salvar os favoritos');
       return;
     }
+    setFavorites(result.favorites);
     showToast(result.isFavorite ? 'Passagem guardada nos favoritos ⭐' : 'Removido dos favoritos');
   };
 
@@ -391,8 +391,12 @@ export default function App() {
                   }}
                   onRemoveFavorite={async (item) => {
                     const result = await StorageService.toggleFavorite(item);
+                    if (!result.ok) {
+                      showToast('Não foi possível salvar os favoritos');
+                      return;
+                    }
                     setFavorites(result.favorites);
-                    showToast(result.ok ? 'Passagem removida dos favoritos' : 'Não foi possível salvar os favoritos');
+                    showToast(result.isFavorite ? 'Passagem guardada nos favoritos ⭐' : 'Passagem removida dos favoritos');
                   }}
                   onShareFavorite={(item) => {
                     const text = `⭐ *Passagem Favorita*\n${item.formattedDate}\n${item.title} (${item.reference})\n\n"${item.keyVerse}"`;
