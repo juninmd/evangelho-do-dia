@@ -78,6 +78,17 @@ Tomai sobre vós o meu jugo e aprendei de mim, porque sou manso e humilde de cor
   },
 };
 
+const pad2 = (n: number): string => String(n).padStart(2, '0');
+
+// Local calendar date; toISOString() is UTC and rolls to "tomorrow" after 21h in Brazil.
+const toLocalDateString = (date: Date): string =>
+  `${date.getFullYear()}-${pad2(date.getMonth() + 1)}-${pad2(date.getDate())}`;
+
+const getDayOfYear = (date: Date): number =>
+  Math.round(
+    (Date.UTC(date.getFullYear(), date.getMonth(), date.getDate()) - Date.UTC(date.getFullYear(), 0, 0)) / 86400000
+  );
+
 const formatLiturgicalDate = (date: Date): string => {
   const weekday = date.toLocaleDateString('pt-BR', { weekday: 'long' });
   const day = date.getDate();
@@ -91,13 +102,11 @@ export const getGospelByOffset = async (dayOffset = 0): Promise<Gospel> => {
   const targetDate = new Date();
   targetDate.setDate(targetDate.getDate() + dayOffset);
 
-  const dateStr = targetDate.toISOString().split('T')[0];
+  const dateStr = toLocalDateString(targetDate);
   const formattedDate = formatLiturgicalDate(targetDate);
 
   // Seleciona leitura litúrgica baseada no dia para manter variedade harmoniosa
-  const dayOfYear = Math.floor(
-    (targetDate.getTime() - new Date(targetDate.getFullYear(), 0, 0).getTime()) / (1000 * 60 * 60 * 24)
-  );
+  const dayOfYear = getDayOfYear(targetDate);
 
   const keys = Object.keys(CURATED_GOSPELS);
   const chosenKey = keys[Math.abs(dayOfYear) % keys.length];
