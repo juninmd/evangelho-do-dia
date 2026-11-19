@@ -8,6 +8,32 @@ const STORAGE_KEYS = {
   RESOLUTION_PREFIX: '@evangelho:resolution:',
 };
 
+export interface ToggleResult {
+  isFavorite: boolean;
+  favorites: FavoriteItem[];
+  /** false when the new list could not be persisted; `favorites` is then the unchanged list. */
+  ok: boolean;
+}
+
+let favoritesQueue: Promise<unknown> = Promise.resolve();
+
+async function toggleFavoriteNow(item: FavoriteItem): Promise<ToggleResult> {
+  const current = await StorageService.getFavorites();
+  const exists = current.some((f) => f.id === item.id || f.reference === item.reference);
+  const updated = exists
+    ? current.filter((f) => f.id !== item.id && f.reference !== item.reference)
+    : [item, ...current];
+
+  try {
+    await AsyncStorage.setItem(STORAGE_KEYS.FAVORITES, JSON.stringify(updated));
+    return { isFavorite: !exists, favorites: updated, ok: true };
+  } catch (e) {
+    console.warn('Erro ao salvar favoritos:', e);
+    // Keep what the user already had instead of reporting an empty list.
+    return { isFavorite: exists, favorites: current, ok: false };
+  }
+}
+
 export const StorageService = {
   async getThemeMode(): Promise<'dark' | 'light' | null> {
     try {
@@ -50,29 +76,27 @@ export const StorageService = {
     try {
       const data = await AsyncStorage.getItem(STORAGE_KEYS.FAVORITES);
       if (!data) return [];
-      return JSON.parse(data) as FavoriteItem[];
-    } catch {
+      const parsed: unknown = JSON.parse(data);
+      // Corrupted or hand-edited storage must not break callers that expect an array of items.
+      if (!Array.isArray(parsed)) return [];
+      return parsed.filter(
+        (f): f is FavoriteItem =>
+          !!f &&
+          typeof f === 'object' &&
+          typeof (f as FavoriteItem).id === 'string' &&
+          (f as FavoriteItem).id.length > 0
+      );
+    } catch (e) {
+      console.error('Erro ao ler favoritos:', e);
       return [];
     }
   },
 
-  async toggleFavorite(item: FavoriteItem): Promise<{ isFavorite: boolean; favorites: FavoriteItem[] }> {
-    try {
-      const current = await StorageService.getFavorites();
-      const exists = current.some((f) => f.id === item.id || f.reference === item.reference);
-      let updated: FavoriteItem[];
-
-      if (exists) {
-        updated = current.filter((f) => f.id !== item.id && f.reference !== item.reference);
-      } else {
-        updated = [item, ...current];
-      }
-
-      await AsyncStorage.setItem(STORAGE_KEYS.FAVORITES, JSON.stringify(updated));
-      return { isFavorite: !exists, favorites: updated };
-    } catch {
-      return { isFavorite: false, favorites: [] };
-    }
+  // Serializes read-modify-write so two quick taps cannot overwrite each other's change.
+  toggleFavorite(item: FavoriteItem): Promise<ToggleResult> {
+    const run = favoritesQueue.then(() => toggleFavoriteNow(item));
+    favoritesQueue = run.catch(() => undefined);
+    return run;
   },
 
   async isResolutionDone(date: string): Promise<boolean> {
