@@ -1,55 +1,44 @@
-# AGENTS.md - Evangelho do Dia
+# AGENTS.md
 
-## Tech Stack
-- **Language**: TypeScript & JavaScript
-- **Framework**: React Native (Expo SDK 51)
-- **UI/UX**: Design Sagrado Sublime, Temas Claro (Pergaminho) e Escuro (Santuário Noturno), Cores Litúrgicas Dinâmicas
-- **Áudio**: Expo Speech (Text-to-Speech pt-BR integrado com velocidade ajustável)
-- **Persistência**: @react-native-async-storage/async-storage
-- **Ícones & Efeitos**: @expo/vector-icons, expo-linear-gradient
-- **Scraping**: Axios + Cheerio (Node.js scripts)
-- **Bot**: node-telegram-bot-api
-- **Build**: Expo (Android, iOS e Web responsivo)
+Evangelho do Dia: a daily Catholic Gospel reader for mobile and web, built with Expo. It shows the liturgical reading, text-to-speech narration, meditation, prayer and a daily purpose. A Node script scrapes the day's Gospel and a second one sends it through Telegram.
 
-## Project Structure
-```
-components/           # Componentes modulares de UI/UX
-  Header.tsx          # Cabeçalho com navegação diária e abas
-  ReadingView.tsx     # Leitura do Evangelho com capitular iluminada
-  HeroQuoteCard.tsx   # Versículo em destaque com gradiente nobre
-  AudioPlayerBar.tsx  # Barra de áudio com ondas sonoras animadas
-  ReflectionView.tsx  # Homilia e meditação do coração
-  PrayerPurposeView.tsx # Oração do dia e propósito diário interativo
-  FavoritesView.tsx   # Gerenciamento de passagens favoritas salvas
-  LiturgicalBadge.tsx # Distintivo litúrgico da Igreja Católica
-  FontSizeModal.tsx   # Ajuste tipográfico de leitura
-  Toast.tsx           # Feedback visual elegante
-theme/                # Sistema de cores, contrastes e cores litúrgicas
-services/             # Serviços da aplicação
-  gospel-service.ts   # Liturgia diária, calendário e textos sagrados
-  speech-service.ts   # Síntese de voz e narração
-  storage-service.ts  # Persistência local de preferências e favoritos
-scripts/              # Utilitários de backend
-  scrape-gospel.js    # Scraper Canção Nova
-  send-telegram.js    # Bot de envio Telegram
-```
+## Stack
 
-## Scripts
-```bash
-npm start             # Start Expo
-npm run android       # Run Android
-npm run ios           # Run iOS
-npm run web           # Run web version
-npm run scrape        # Scrape daily gospel
-npm run send-telegram # Send via Telegram bot
-npx tsc --noEmit      # Type-check TypeScript
-```
+- Expo (managed workflow, `expo` ~58 in `package.json`), React Native, React
+- TypeScript with strict typing (`tsconfig.json`)
+- `expo-speech` (pt-BR narration), `@react-native-async-storage/async-storage` (preferences and favorites)
+- Node scripts: axios and cheerio (scraper), Telegram delivery (`scripts/send-telegram.js`)
+- Package manager: pnpm (`packageManager` field, `pnpm-lock.yaml`). README and CONTRIBUTING still say `npm install`
+
+## Commands
+
+- Install: `pnpm install` (see the package-manager note above)
+- Start: `npm start` (`expo start`). Also `npm run android`, `npm run ios`, `npm run web`
+- Scrape the day's Gospel: `npm run scrape`
+- Send through Telegram: `npm run send-telegram` (needs the bot setup in `TELEGRAM_SETUP.md`)
+- Type-check: `npx tsc --noEmit`
+- No test or lint script is defined. CI (`validate.yml`) calls only the reusable validate workflow
+
+## Structure
+
+- `App.tsx`: root screen, daily navigation (yesterday, today, tomorrow), theme toggle
+- `components/`: UI pieces (`Header`, `ReadingView`, `HeroQuoteCard`, `AudioPlayerBar`, `ReflectionView`, `PrayerPurposeView`, `FavoritesView`, `LiturgicalBadge`, `FontSizeModal`, `Toast`)
+- `services/`: `gospel-service.ts` (liturgy and texts), `speech-service.ts` (narration), `storage-service.ts` (preferences and favorites)
+- `theme/`: colors, contrast and liturgical colors. `types/`: shared types
+- `scripts/`: backend utilities (`scrape-gospel.js`, `send-telegram.js`)
+- Root docs: `README.md`, `CONTRIBUTING.md`, `QUICKSTART.md`, `SCRAPER_GUIDE.md`, `TELEGRAM_SETUP.md`, `REFERENCES.md`, `ROADMAP.md`
 
 ## Conventions
-- Expo managed workflow
-- Tipagem estrita com TypeScript
-- Acessibilidade e responsividade para dispositivos móveis e web
-- Conteúdo litúrgico da Igreja Católica em Língua Portuguesa (pt-BR)
+
+- Expo managed workflow (from the original file).
+- Strict TypeScript. Run `npx tsc --noEmit` before a PR.
+- Accessibility and responsive layout for mobile and web.
+- Liturgical content is in Portuguese (pt-BR).
+
+## Gotchas
+
+- Environment: copy `.env.example` for local values. Never commit `.env`, bot tokens or chat IDs.
+- The Gospel text comes from a scraper. Check the source when the layout changes, see `SCRAPER_GUIDE.md`.
 
 <!-- base-actions-main-policy -->
 ## GitHub Actions — padrão obrigatório (@main)
