@@ -30,7 +30,7 @@ Evangelho do Dia: a daily Catholic Gospel reader for mobile and web, built with 
 
 ## Conventions
 
-- Expo managed workflow (from the original file).
+- Expo managed workflow.
 - Strict TypeScript. Run `npx tsc --noEmit` before a PR.
 - Accessibility and responsive layout for mobile and web.
 - Liturgical content is in Portuguese (pt-BR).
