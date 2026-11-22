@@ -10,6 +10,12 @@ const path = require('path');
 const TELEGRAM_BOT_TOKEN = process.env.TELEGRAM_BOT_TOKEN;
 const TELEGRAM_CHAT_ID = process.env.TELEGRAM_CHAT_ID;
 
+// Telegram rejects messages above 4096 characters ("message is too long").
+const TELEGRAM_MAX_LENGTH = 4096;
+
+// Scraped text may contain Markdown markers; an unpaired one makes Telegram reject the message.
+const escapeMarkdown = (text) => String(text).replace(/([_*`\[])/g, '\\$1');
+
 /**
  * Format the gospel message for Telegram
  */
@@ -19,27 +25,31 @@ function formatGospelMessage(gospel) {
   message += `📅 *Data:* ${gospel.date}\n`;
   
   if (gospel.title && gospel.title !== 'Evangelho do Dia') {
-    message += `📌 *${gospel.title}*\n`;
+    message += `📌 *${escapeMarkdown(gospel.title)}*\n`;
   }
   
   if (gospel.reference) {
-    message += `📜 _${gospel.reference}_\n`;
+    message += `📜 _${escapeMarkdown(gospel.reference)}_\n`;
   }
   
   message += `────────────────────────\n\n`;
-  
-  if (gospel.text) {
-    message += `${gospel.text}\n\n`;
+
+  const footer = `────────────────────────\n🙏 _Fonte: Canção Nova_`;
+  const room = TELEGRAM_MAX_LENGTH - message.length - footer.length;
+  const text = gospel.text ? `${escapeMarkdown(gospel.text)}\n\n` : '';
+  const reflection = gospel.reflection
+    ? `💭 *REFLEXÃO*\n${escapeMarkdown(gospel.reflection)}\n\n`
+    : '';
+
+  // Too long: drop the reflection first, then cut the gospel text (never inside a *bold* marker).
+  let body = text + reflection;
+  if (body.length > room) body = text;
+  if (body.length > room) {
+    // Cut before a trailing backslash so an escape is never split.
+    body = `${body.slice(0, room - 3).replace(/\\+$/, '')}…\n\n`;
   }
-  
-  if (gospel.reflection) {
-    message += `💭 *REFLEXÃO*\n${gospel.reflection}\n\n`;
-  }
-  
-  message += `────────────────────────\n`;
-  message += `🙏 _Fonte: Canção Nova_`;
-  
-  return message;
+
+  return message + body + footer;
 }
 
 /**
